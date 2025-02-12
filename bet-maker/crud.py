@@ -21,11 +21,10 @@ async def get_all_bets(db: AsyncSession) -> list[Bet]:
 
 
 async def fetch_all_events() -> list[SEvent]:
-    if settings.is_single:
-        return [SEvent(event_id=1, status=EventState.FINISHED_WIN, coefficient=1.43, deadline=234234234234),
-                SEvent(event_id=1, status=EventState.FINISHED_LOSE, coefficient=1.43, deadline=234234234234)]
-    url = settings.events_url
     async with AsyncClient() as client:
-        response = await client.get(url)
-        events = await response.json()
-        return events
+        response = await client.get(settings.line_provider_url.format(settings.bet_maker_host))
+        if response.status_code != 200:
+            raise ValueError(f"Ошибка запроса: {response.status_code}, ответ: {response.text}")
+        if "application/json" not in response.headers.get("Content-Type", ""):
+            raise ValueError(f"Ответ не является JSON: {response.text}")
+        return response.json()

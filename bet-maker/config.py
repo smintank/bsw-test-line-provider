@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     debug: bool
     bet_maker_host: str
     bet_maker_port: int
+    line_provider_port: int
+    line_provider_url: str = 'http://line-provider:{}/events/'
     is_single: bool = True
 
     model_config = SettingsConfigDict(env_file=find_dotenv(), case_sensitive=False, extra="allow")
