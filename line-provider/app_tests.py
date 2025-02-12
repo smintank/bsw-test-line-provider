@@ -3,7 +3,7 @@ import time
 import pytest
 from httpx import AsyncClient, ASGITransport
 
-from app import app
+from main import app
 
 
 @pytest.mark.parametrize('anyio_backend', ['asyncio'])
