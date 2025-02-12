@@ -1,7 +1,7 @@
 import time
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 
 from app import app
 
@@ -17,12 +17,12 @@ async def test_simple_workflow(anyio_backend):
         'state': 1
     }
 
-    async with AsyncClient(app=app, base_url='http://localhost') as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://localhost') as ac:
         create_response = await ac.put('/event', json=test_event)
 
     assert create_response.status_code == 200
 
-    async with AsyncClient(app=app, base_url='http://localhost') as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://localhost') as ac:
         response = await ac.get(f'/event/{test_id}')
 
     assert response.status_code == 200
@@ -31,12 +31,12 @@ async def test_simple_workflow(anyio_backend):
     updated_event = test_event.copy()
     updated_event['state'] = 2
 
-    async with AsyncClient(app=app, base_url='http://localhost') as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://localhost') as ac:
         update_response = await ac.put('/event', json={'event_id': test_id, 'state': 2})
 
     assert update_response.status_code == 200
 
-    async with AsyncClient(app=app, base_url='http://localhost') as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://localhost') as ac:
         response = await ac.get(f'/event/{test_id}')
 
     assert response.status_code == 200
