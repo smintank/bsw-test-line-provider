@@ -10,7 +10,7 @@ from routes.events import router as event_router
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(lifespan=lifespan, debug=settings.debug)
+app = FastAPI(title=settings.app_name, lifespan=lifespan, debug=settings.debug)
 app.include_router(bet_router)
 app.include_router(event_router)
 

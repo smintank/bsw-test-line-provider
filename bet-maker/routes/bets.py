@@ -7,7 +7,7 @@ from crud import get_all_bets, create_bet
 from schemas import SCreateBet
 
 
-router = APIRouter()
+router = APIRouter(tags=["Bets"])
 
 
 @router.post("/bet/")

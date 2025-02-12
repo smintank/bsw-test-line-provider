@@ -1,7 +1,9 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import find_dotenv
 
 
 class Settings(BaseSettings):
+    app_name: str = 'Bet Maker'
     postgres_user: str
     postgres_password: str
     postgres_host: str
@@ -13,7 +15,7 @@ class Settings(BaseSettings):
     events_url: str | None = None
     is_single: bool = True
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False, extra="allow")
+    model_config = SettingsConfigDict(env_file=find_dotenv(), case_sensitive=False, extra="allow")
 
 
 settings = Settings()
