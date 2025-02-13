@@ -11,9 +11,9 @@ from routes.events import router as event_router
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title=settings.app_name, lifespan=lifespan, debug=settings.debug)
-app.include_router(bet_router)
-app.include_router(event_router)
+app.include_router(bet_router, tags=["Bets"])
+app.include_router(event_router, prefix="/events", tags=["Events"])
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=settings.bet_maker_host, port=settings.bet_maker_port)
+    uvicorn.run("main:app", reload=True)

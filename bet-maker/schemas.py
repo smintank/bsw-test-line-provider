@@ -1,27 +1,37 @@
-import enum
+from datetime import datetime
+from decimal import Decimal
 
-from pydantic import BaseModel, Field, condecimal
+from pydantic import BaseModel, condecimal, field_serializer
 
-
-class EventState(enum.Enum):
-    NEW = 1
-    FINISHED_WIN = 2
-    FINISHED_LOSE = 3
+from models import EventStatus
 
 
-class SBet(BaseModel):
-    bet_id: int
-    amount: float
-    status: EventState
+class EventSchema(BaseModel):
+    event_id: int
+    coefficient: condecimal(gt=0, max_digits=20, decimal_places=2)
+    deadline: datetime
+    status: EventStatus = EventStatus.NOT_FINISHED
 
 
-class SCreateBet(BaseModel):
+class GetBetsSchema(BaseModel):
+    id: int
+    amount: condecimal(gt=0, max_digits=20, decimal_places=2)
+    coefficient: condecimal(gt=0, max_digits=20, decimal_places=2)
+    status: int
+    event_id: EventStatus
+    timestamp: datetime
+
+    @field_serializer("amount", "coefficient")
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
+
+
+class CreateBetSchema(BaseModel):
     event_id: int
     amount: condecimal(gt=0, max_digits=20, decimal_places=2)
 
+    model_config = {"extra": "forbid"}
 
-class SEvent(BaseModel):
-    event_id: int
-    coefficient: float
-    deadline: int
-    status: EventState
+
+class CreatedBetResponseSchema(BaseModel):
+    bet_id: int

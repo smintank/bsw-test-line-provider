@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from crud import fetch_all_events
+from crud import fetch_available_events
 
 
-router = APIRouter(prefix="/events", tags=["Events"])
+router = APIRouter()
 
 @router.get("/")
-async def get_events():
-    return await fetch_all_events()
+async def get_available_events():
+    return await fetch_available_events()
