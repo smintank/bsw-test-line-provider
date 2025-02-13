@@ -17,6 +17,8 @@ services:
   bet-maker:
     build: ./bet-maker
     env_file: .env
+    environment:
+      LINE_PROVIDER_HOST: 'line-provider'
     depends_on:
       - db
       - line-provider

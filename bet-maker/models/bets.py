@@ -5,12 +5,12 @@ from decimal import Decimal
 from sqlalchemy import func, Integer, DECIMAL, DateTime, Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database import Base
+from db.session import Base
 
 class EventStatus(enum.Enum):
-    NOT_FINISHED = 1
-    WIN = 2
-    LOSE = 3
+    NOT_FINISHED = "not_finished"
+    WIN = "win"
+    LOSE = "lose"
 
 class Bet(Base):
     __tablename__ = "bets"
@@ -20,4 +20,7 @@ class Bet(Base):
     event_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
     coefficient: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), nullable=False)
     status: Mapped[EventStatus] = mapped_column(Enum(EventStatus), nullable=False)
-    timestamp: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=func.now(), server_default=func.now())
+
+    def __repr__(self):
+        return f"<Bet(id={self.id}, amount={self.amount}, event_id={self.event_id}, status={self.status.value})>"

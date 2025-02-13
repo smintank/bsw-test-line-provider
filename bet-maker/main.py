@@ -1,10 +1,10 @@
 import logging
-
+import logging_config
 import uvicorn
 from fastapi import FastAPI
 
 from config import settings
-from database import lifespan
+from db.session import lifespan
 from routes.bets import router as bet_router
 from routes.events import router as event_router
 
