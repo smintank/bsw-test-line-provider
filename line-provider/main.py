@@ -14,5 +14,5 @@ app = FastAPI(title=settings.app_name, debug=settings.debug)
 app.include_router(events_router)
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, host=settings.line_provider_host, port=settings.line_provider_port)
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True)
