@@ -1,7 +1,7 @@
-from datetime import datetime, UTC
+from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Path
-from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema, next_index
+from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema
 from database import events
 
 router = APIRouter(prefix='/events', tags=['Events'])
@@ -29,7 +29,7 @@ async def update_event(event: UpdateEventSchema, event_id: int = Path(..., gt=0)
 
 @router.get('/', status_code=200)
 async def get_events() -> list[GetEventSchema]:
-    return list(e for e in events.values() if datetime.now(UTC) < e.deadline)
+    return list(e for e in events.values() if datetime.now() < e.deadline)
 
 
 @router.get('/{event_id}/', status_code=200)

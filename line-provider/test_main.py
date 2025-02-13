@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 from httpx import AsyncClient, ASGITransport
 from asgi_lifespan import LifespanManager
 from main import app
@@ -16,7 +16,7 @@ async def test_simple_workflow(client, anyio_backend):
     events.clear()
     test_id = 4
     event_data = {
-        'deadline': (datetime.now(UTC) + timedelta(minutes=1)).isoformat(timespec="microseconds").replace("+00:00", "Z"),
+        'deadline': (datetime.now() + timedelta(minutes=1)).isoformat(),
         'coefficient': 1.2
     }
     created_event = event_data | {'state': 1, 'event_id': test_id}
