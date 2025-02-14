@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
 from schemas.event_schemas import EventSchema
-from services.event_services import LineProviderService
+from services.event_services import LineProviderAPIService
 
 
 router = APIRouter()
 
-@router.get("/")
-async def get_available_events() -> list[EventSchema]:
-    return await LineProviderService.fetch_available_events()
+@router.get("/", response_model=list[EventSchema])
+async def get_available_events():
+    return await LineProviderAPIService.fetch_available_events()

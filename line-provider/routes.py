@@ -1,7 +1,10 @@
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Path
-from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema
+
+
+from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema, EventStatus
+from services.rabbit_service import send_event_update
 from database import events
 
 router = APIRouter(prefix='/events', tags=['Events'])
@@ -20,9 +23,12 @@ async def update_event(event: UpdateEventSchema, event_id: int = Path(..., gt=0)
         raise HTTPException(status_code=404, detail="Event not found")
 
     existing_event = events[event_id]
+
     updated_data = event.model_dump(exclude_unset=True)
     [setattr(existing_event, key, value) for key, value in updated_data.items()]
     events[event_id] = existing_event
+    if "status" in updated_data:
+        send_event_update(event_id, existing_event.status.value)
 
     return existing_event
 

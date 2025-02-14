@@ -7,7 +7,7 @@ from typing import Optional
 from pydantic import BaseModel, Field, condecimal, field_serializer
 
 
-class EventState(enum.Enum):
+class EventStatus(enum.Enum):
     NEW = 1
     FINISHED_WIN = 2
     FINISHED_LOSE = 3
@@ -23,7 +23,7 @@ class GetEventSchema(BaseModel):
     event_id: int = Field(default_factory=next_index)
     coefficient: condecimal(gt=0, max_digits=20, decimal_places=2)
     deadline: datetime
-    state: EventState = EventState.NEW
+    status: EventStatus = EventStatus.NEW
 
     @field_serializer("coefficient")
     def serialize_decimal(self, value: Decimal) -> float:
@@ -38,4 +38,4 @@ class CreateEventSchema(BaseModel):
 class UpdateEventSchema(BaseModel):
     coefficient: Optional[condecimal(gt=0, max_digits=20, decimal_places=2)] = None
     deadline: Optional[datetime] = None
-    state: Optional[EventState] = None
+    status: Optional[EventStatus] = None

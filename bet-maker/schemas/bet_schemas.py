@@ -1,18 +1,15 @@
-from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel, condecimal, field_serializer, ConfigDict
-from models.bets import EventStatus
+from schemas.event_schemas import EventSchema
 
 
 class GetBetsSchema(BaseModel):
     id: int
     amount: condecimal(gt=0, max_digits=20, decimal_places=2)
-    coefficient: condecimal(gt=0, max_digits=20, decimal_places=2)
-    status: EventStatus
-    event_id: int
-    timestamp: datetime
+    event: EventSchema
 
-    @field_serializer("amount", "coefficient")
+
+    @field_serializer("amount")
     def serialize_decimal(self, value: Decimal) -> float:
         return float(value) if value is not None else 0.0
 
@@ -28,3 +25,5 @@ class CreateBetSchema(BaseModel):
 
 class CreatedBetResponseSchema(BaseModel):
     bet_id: int
+
+    model_config = ConfigDict(from_attributes=True)

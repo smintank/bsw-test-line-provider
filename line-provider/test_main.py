@@ -19,7 +19,7 @@ async def test_simple_workflow(client, anyio_backend):
         'deadline': (datetime.now() + timedelta(minutes=1)).isoformat(),
         'coefficient': 1.2
     }
-    created_event = event_data | {'state': 1, 'event_id': test_id}
+    created_event = event_data | {'status': 1, 'event_id': test_id}
 
 
     create_response = await client.post('/events/', json=event_data)
@@ -32,7 +32,7 @@ async def test_simple_workflow(client, anyio_backend):
 
 
     updated_event = created_event.copy()
-    updated_event['state'] = 2
+    updated_event['status'] = 2
     update_response = await client.patch(f'/events/{test_id}/', json=updated_event)
     assert update_response.status_code == 200
     assert update_response.json() == updated_event

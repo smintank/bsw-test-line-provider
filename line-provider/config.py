@@ -8,6 +8,13 @@ class Settings(BaseSettings):
     line_provider_host: str
     line_provider_port: int
 
+    # RabbitMQ
+    rabbitmq_host: str = "rabbitmq"
+    rabbitmq_port: int = 5672
+    rabbitmq_user: str = "user"
+    rabbitmq_password: str = "password"
+    rabbitmq_queue: str = "event_updates"
+
     model_config = SettingsConfigDict(env_file=find_dotenv(), case_sensitive=False, extra="allow")
 
 

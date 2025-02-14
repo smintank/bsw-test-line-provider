@@ -1,0 +1,61 @@
+import asyncio
+import logging
+
+import pika
+import json
+
+from config import settings
+from db.session import get_db
+from models.events import EventStatus
+from repositories.evants import EventRepository
+
+logger = logging.getLogger(__name__)
+
+
+STATE_MAPPING = {
+    1: EventStatus.NOT_FINISHED,
+    2: EventStatus.WIN,
+    3: EventStatus.LOSE,
+}
+
+
+def process_message(ch, method, properties, body):
+    data = json.loads(body)
+    event_id = data.get("event_id")
+    status = data.get("status")
+
+    if event_id and status:
+        logger.debug("Обновляем ставки для события %s, новый статус: %s", event_id, status)
+
+        async def update_db():
+            async for db in get_db():
+                enum_status = STATE_MAPPING[status]
+                updated_event = await EventRepository.update_event_status(db, event_id, enum_status)
+                if not updated_event:
+                    logger.warning(
+                        "У события %s не был обновлен статус на: %s, событие не найдено",
+                        event_id, status
+                    )
+
+        asyncio.run(update_db())
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+
+def start_rabbitmq_consumer():
+    logger.info("Starting rabbitmq consumer")
+    credentials = pika.PlainCredentials(settings.rabbitmq_user, settings.rabbitmq_password)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(
+        host=settings.rabbitmq_host, port=settings.rabbitmq_port, credentials=credentials
+    ))
+    channel = connection.channel()
+    channel.queue_declare(queue=settings.rabbitmq_queue, durable=True)
+    channel.basic_consume(queue=settings.rabbitmq_queue, on_message_callback=process_message)
+
+    logger.info(" [*] Ожидание сообщений. Для выхода нажмите CTRL+C")
+    channel.start_consuming()
+
+
+
+if __name__ == "__main__":
+    start_rabbitmq_consumer()

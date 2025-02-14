@@ -1,54 +1,40 @@
 import logging
+from datetime import datetime, timedelta
 
-from httpx import AsyncClient, HTTPStatusError, RequestError, DecodingError
+from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import settings
-from schemas.event_schemas import EventSchema
-from typing import Optional, List
+from models.events import Event
+from repositories.evants import EventRepository
+from services.line_provider_api_service import LineProviderAPIService
 
 logger = logging.getLogger(__name__)
 
 
-class LineProviderService:
-    BASE_URL = settings.event_app_url
+class EventService:
+    @staticmethod
+    async def get_or_create_event(db: AsyncSession, event_id: int) -> Event | None:
+        event = await EventRepository.get_event(db, event_id)
 
-    _client: Optional[AsyncClient] = None
+        if event:
+            now = datetime.now()
+            if event.deadline > now + timedelta(seconds=3):
+                return event
+            if event.deadline < now - timedelta(seconds=3):
+                raise HTTPException(
+                    status_code=404,
+                    detail={"message": "Уже нельзя сделать ставку на это событие."}
+                )
 
-    @classmethod
-    def get_client(cls) -> AsyncClient:
-        if cls._client is None:
-            cls._client = AsyncClient()
-        return cls._client
+        event_data = await LineProviderAPIService.fetch_event(event_id)
+        if not event_data:
+            logger.debug(f"Событие %s не найдено в Line-provider", event_id)
+            return None
 
-    @classmethod
-    async def get_url_data(cls, url: str) -> dict:
-        client = cls.get_client()
-        try:
-            response = await client.get(url)
-            response.raise_for_status()
-            return response.json()
-        except DecodingError as e:
-            logger.error("[%s] Ошибка декодирования JSON: %s", url, e)
-        except HTTPStatusError as e:
-            logger.error("[%s] Ошибка HTTP: %s", url, e)
-        except RequestError as e:
-            logger.error("[%s] Ошибка запроса: %s", url, e)
-        except Exception as e:
-            logger.error("[%s] Непредвиденная ошибка: %s", url, e)
-        return {}
-
-    @classmethod
-    async def fetch_event(cls, event_id: int) -> Optional[EventSchema]:
-        data = await cls.get_url_data(f"{cls.BASE_URL}{event_id}/")
-        return EventSchema(**data) if data else None
-
-    @classmethod
-    async def fetch_available_events(cls) -> List[EventSchema]:
-        data = await cls.get_url_data(cls.BASE_URL)
-        return [EventSchema(**event) for event in data] if data else []
-
-    @classmethod
-    async def close_client(cls):
-        if cls._client:
-            await cls._client.aclose()
-            cls._client = None
+        event = Event(
+            id=event_data.event_id,
+            coefficient=event_data.coefficient,
+            deadline=event_data.deadline,
+            status=event_data.status,
+        )
+        return await EventRepository.create_event(db, event)

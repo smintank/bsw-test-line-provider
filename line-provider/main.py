@@ -9,7 +9,7 @@ from routes import router as events_router
 logger = logging.getLogger(__name__)
 
 
-app = FastAPI(title=settings.app_name, debug=settings.debug)
+app = FastAPI(title=settings.app_name, debug=settings.debug, root_path="/service")
 
 app.include_router(events_router)
 
