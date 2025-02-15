@@ -3,7 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.session import get_db
 from repositories.bets import BetRepository
-from schemas.bet_schemas import CreateBetSchema, GetBetsSchema, CreatedBetResponseSchema
+from schemas.bet_schemas import (CreateBetSchema, CreatedBetResponseSchema,
+                                 GetBetsSchema)
 from services.bet_services import BetService
 
 router = APIRouter()

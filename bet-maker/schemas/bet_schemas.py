@@ -1,5 +1,7 @@
 from decimal import Decimal
-from pydantic import BaseModel, condecimal, field_serializer, ConfigDict, Field
+
+from pydantic import BaseModel, ConfigDict, Field, condecimal, field_serializer
+
 from schemas.event_schemas import EventSchema
 
 

@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import func, Integer, DECIMAL, DateTime, ForeignKey
+
+from sqlalchemy import DECIMAL, DateTime, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from db.session import Base
 
 

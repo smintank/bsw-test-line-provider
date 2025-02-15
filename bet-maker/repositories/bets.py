@@ -17,7 +17,6 @@ class BetRepository:
         await db.refresh(bet)
         return bet
 
-
     @staticmethod
     async def get_all_bets(db: AsyncSession) -> Sequence[Bet]:
         """Возвращает все ставки из базы данных"""

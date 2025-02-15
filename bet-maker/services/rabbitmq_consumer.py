@@ -1,13 +1,14 @@
 import asyncio
+import json
 import logging
 
 import pika
-import json
 
 from config import settings
 from constants import EVENT_STATUS_MAPPING
 from db.session import get_db
-from messages import RABBITMQ_EVENT_UPDATED, RABBITMQ_EVENT_NOT_UPDATED, RABBITMQ_READY_FOR_MSGS, RABBITMQ_RUN_CONSUMER
+from messages import (RABBITMQ_EVENT_NOT_UPDATED, RABBITMQ_EVENT_UPDATED,
+                      RABBITMQ_READY_FOR_MSGS, RABBITMQ_RUN_CONSUMER)
 from models.events import EventStatus
 from repositories.evants import EventRepository
 
@@ -27,7 +28,7 @@ def process_message(ch, method, properties, body):
                 enum_status = EVENT_STATUS_MAPPING.get(status, EventStatus.NOT_FINISHED)
                 updated_event = await EventRepository.update_event_status(db, event_id, enum_status)
                 if not updated_event:
-                    logger.warning(RABBITMQ_EVENT_NOT_UPDATED,event_id, status)
+                    logger.warning(RABBITMQ_EVENT_NOT_UPDATED, event_id, status)
         asyncio.run(update_db())
 
     ch.basic_ack(delivery_tag=method.delivery_tag)

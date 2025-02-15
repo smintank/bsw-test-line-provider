@@ -1,11 +1,12 @@
 import logging
+from typing import List, Optional
 
-from httpx import AsyncClient, HTTPStatusError, RequestError, DecodingError
+from httpx import AsyncClient, DecodingError, HTTPStatusError, RequestError
 
 from config import settings
-from messages import API_JSON_ERROR, API_HTTP_ERROR, API_REQUEST_ERROR, API_UNKNOWN_ERROR
+from messages import (API_HTTP_ERROR, API_JSON_ERROR, API_REQUEST_ERROR,
+                      API_UNKNOWN_ERROR)
 from schemas.event_schemas import EventSchema
-from typing import Optional, List
 
 logger = logging.getLogger(__name__)
 

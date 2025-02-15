@@ -1,8 +1,9 @@
 import logging
-import logging_config
+
 import uvicorn
 from fastapi import FastAPI
 
+import logging_config  # noqa
 from config import settings
 from db.session import lifespan
 from routes.bets import router as bet_router

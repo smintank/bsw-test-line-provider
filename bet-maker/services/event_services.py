@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from messages import EVENT_UNAVAILABLE, EVENT_NOT_IN_API
+from messages import EVENT_NOT_IN_API, EVENT_UNAVAILABLE
 from models.events import Event
 from repositories.evants import EventRepository
 from services.line_provider_api_service import LineProviderAPIService

@@ -4,7 +4,7 @@ import enum
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import Integer, DateTime, DECIMAL, Enum
+from sqlalchemy import DECIMAL, DateTime, Enum, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.session import Base

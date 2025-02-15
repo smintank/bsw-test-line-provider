@@ -1,6 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, condecimal, field_serializer, model_validator, ConfigDict, field_validator
+
+from pydantic import (BaseModel, ConfigDict, condecimal, field_serializer,
+                      model_validator)
 
 from constants import EVENT_STATUS_MAPPING
 from models.events import EventStatus
