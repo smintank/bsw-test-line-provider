@@ -4,7 +4,10 @@ from dotenv import find_dotenv
 
 class Settings(BaseSettings):
 
+    # Общие настройки
     app_name: str = "Bet Maker"
+    debug: bool = False
+    is_single: bool = True
 
     # PostgreSQL
     postgres_user: str
@@ -12,10 +15,6 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: int
     postgres_db: str
-
-    # Общие настройки
-    debug: bool = False
-    is_single: bool = True
 
     # Сервисы
     bet_maker_host: str
