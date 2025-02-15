@@ -4,7 +4,7 @@ from decimal import Decimal
 from itertools import count
 from typing import Optional
 
-from pydantic import BaseModel, Field, condecimal, field_serializer
+from pydantic import BaseModel, Field, condecimal, field_serializer, ConfigDict
 
 
 class EventStatus(enum.Enum):
@@ -28,6 +28,8 @@ class GetEventSchema(BaseModel):
     @field_serializer("coefficient")
     def serialize_decimal(self, value: Decimal) -> float:
         return float(value)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CreateEventSchema(BaseModel):

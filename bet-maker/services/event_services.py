@@ -23,7 +23,9 @@ class EventService:
                 raise HTTPException(status_code=404, detail={"message": EVENT_UNAVAILABLE})
 
         if event_from_api := await LineProviderAPIService.fetch_event(event_id):
-            event = Event(**event_from_api.model_dump(exclude_unset=True))
+            event_data = event_from_api.model_dump(exclude_unset=True)
+            event_data["id"] = event_data.pop("event_id")
+            event = Event(**event_data)
             return await EventRepository.create_event(db, event)
 
         logger.debug(EVENT_NOT_IN_API, event_id)

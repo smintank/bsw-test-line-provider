@@ -35,7 +35,7 @@ async def update_event(event: UpdateEventSchema, event_id: int = Path(..., gt=0)
 
 @router.get('/', status_code=200)
 async def get_events() -> list[GetEventSchema]:
-    return list(e for e in events.values() if datetime.now() < e.deadline)
+    return list(GetEventSchema.model_validate(e) for e in events.values() if datetime.now() < e.deadline)
 
 
 @router.get('/{event_id}/', status_code=200)

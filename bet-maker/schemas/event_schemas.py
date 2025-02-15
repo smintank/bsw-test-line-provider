@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, condecimal, field_serializer, model_validator, ConfigDict
+from pydantic import BaseModel, condecimal, field_serializer, model_validator, ConfigDict, field_validator
 
 from constants import EVENT_STATUS_MAPPING
 from models.events import EventStatus
@@ -18,7 +18,9 @@ class EventSchema(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def convert_status(cls, value: int) -> EventStatus:
-        return EVENT_STATUS_MAPPING.get(value, EventStatus.NOT_FINISHED)
+    def convert_status(cls, values: EventStatus | int) -> EventStatus:
+        if isinstance(values, dict) and isinstance(values.get("status"), int):
+            values["status"] = EVENT_STATUS_MAPPING.get(values["status"], EventStatus.NOT_FINISHED)
+        return values
 
     model_config = ConfigDict(from_attributes=True)
