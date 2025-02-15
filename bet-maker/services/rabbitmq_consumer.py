@@ -14,13 +14,6 @@ from repositories.evants import EventRepository
 logger = logging.getLogger(__name__)
 
 
-STATE_MAPPING = {
-    1: EventStatus.NOT_FINISHED,
-    2: EventStatus.WIN,
-    3: EventStatus.LOSE,
-}
-
-
 def process_message(ch, method, properties, body):
     data = json.loads(body)
     event_id = data.get("event_id")
@@ -31,7 +24,7 @@ def process_message(ch, method, properties, body):
 
         async def update_db():
             async for db in get_db():
-                enum_status = STATE_MAPPING[status]
+                enum_status = EVENT_STATUS_MAPPING.get(status, EventStatus.NOT_FINISHED)
                 updated_event = await EventRepository.update_event_status(db, event_id, enum_status)
                 if not updated_event:
                     logger.warning(RABBITMQ_EVENT_NOT_UPDATED,event_id, status)
