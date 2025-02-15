@@ -8,7 +8,6 @@ class GetBetsSchema(BaseModel):
     amount: condecimal(gt=0, max_digits=20, decimal_places=2)
     event: EventSchema
 
-
     @field_serializer("amount")
     def serialize_decimal(self, value: Decimal) -> float:
         return float(value) if value is not None else 0.0
@@ -20,7 +19,7 @@ class CreateBetSchema(BaseModel):
     event_id: int
     amount: condecimal(gt=0, max_digits=20, decimal_places=2)
 
-    model_config = {"extra": "forbid"}
+    model_config = ConfigDict(extra="forbid")
 
 
 class CreatedBetResponseSchema(BaseModel):

@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 
 from config import settings
+from messages import DB_ERROR
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ async def get_db() -> AsyncGenerator:
         try:
             yield session
         except SQLAlchemyError as e:
-            logger.error("Ошибка работы с БД: %s", e)
+            logger.error(DB_ERROR, e)
             await session.rollback()
         finally:
             await session.close()

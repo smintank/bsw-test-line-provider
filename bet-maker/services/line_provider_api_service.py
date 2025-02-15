@@ -3,6 +3,7 @@ import logging
 from httpx import AsyncClient, HTTPStatusError, RequestError, DecodingError
 
 from config import settings
+from messages import API_JSON_ERROR, API_HTTP_ERROR, API_REQUEST_ERROR, API_UNKNOWN_ERROR
 from schemas.event_schemas import EventSchema
 from typing import Optional, List
 
@@ -20,14 +21,13 @@ class LineProviderAPIService:
                 response.raise_for_status()
                 return response.json()
             except DecodingError as e:
-                logger.debug("[%s] Ошибка декодирования JSON: %s", url, e)
+                logger.debug(API_JSON_ERROR, url, e)
             except HTTPStatusError as e:
-                logger.error("[%s] Ошибка HTTP: %s", url, e)
+                logger.error(API_HTTP_ERROR, url, e)
             except RequestError as e:
-                logger.warning("[%s] Ошибка запроса: %s", url, e)
+                logger.warning(API_REQUEST_ERROR, url, e)
             except Exception as e:
-                logger.exception("[%s] Непредвиденная ошибка: %s", url, e)
-            return None
+                logger.exception(API_UNKNOWN_ERROR, url, e)
 
     @classmethod
     async def fetch_event(cls, event_id: int) -> Optional[EventSchema] | None:
