@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class EventService:
     @staticmethod
-    async def get_or_create_event(db: AsyncSession, event_id: int) -> Event | None:
+    async def get_or_fetch_event(db: AsyncSession, event_id: int) -> Event | None:
         """Возвращает событие из базы если оно существует или запрашивает по API"""
         if event_from_db := await EventRepository.get_event(db, event_id):
             if event_from_db.deadline >= datetime.now():

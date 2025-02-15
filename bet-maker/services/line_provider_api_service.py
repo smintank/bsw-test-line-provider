@@ -14,7 +14,7 @@ class LineProviderAPIService:
     BASE_URL = settings.event_app_url
 
     @classmethod
-    async def get_url_data(cls, url: str) -> dict | None:
+    async def get_url_data(cls, url: str) -> dict:
         async with AsyncClient() as client:
             try:
                 response = await client.get(url)
@@ -28,6 +28,7 @@ class LineProviderAPIService:
                 logger.warning(API_REQUEST_ERROR, url, e)
             except Exception as e:
                 logger.exception(API_UNKNOWN_ERROR, url, e)
+            return {}
 
     @classmethod
     async def fetch_event(cls, event_id: int) -> Optional[EventSchema] | None:
