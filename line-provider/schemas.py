@@ -4,7 +4,7 @@ from decimal import Decimal
 from itertools import count
 from typing import Optional
 
-from pydantic import BaseModel, Field, condecimal, field_serializer, ConfigDict
+from pydantic import BaseModel, Field, condecimal, field_serializer, ConfigDict, field_validator
 
 
 class EventStatus(enum.Enum):
@@ -35,6 +35,14 @@ class GetEventSchema(BaseModel):
 class CreateEventSchema(BaseModel):
     coefficient: condecimal(gt=0, max_digits=20, decimal_places=2)
     deadline: datetime
+
+    @field_validator("deadline")
+    @classmethod
+    def check_naive_datetime(cls, value: datetime):
+        """Запрещает datetime с timezone"""
+        if value.tzinfo is not None:
+            raise ValueError("Datetime must be offset-naive (without timezone)")
+        return value
 
 
 class UpdateEventSchema(BaseModel):

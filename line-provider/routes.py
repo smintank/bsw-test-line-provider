@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Path
 
 
-from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema, EventStatus
+from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema
 from services.rabbit_service import send_event_update
 from database import events
 
@@ -28,7 +28,7 @@ async def update_event(event: UpdateEventSchema, event_id: int = Path(..., gt=0)
     [setattr(existing_event, key, value) for key, value in updated_data.items()]
     events[event_id] = existing_event
     if "status" in updated_data:
-        send_event_update(event_id, existing_event.status.value)
+        await send_event_update(event_id, existing_event.status.value)
 
     return existing_event
 
