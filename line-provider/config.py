@@ -1,9 +1,9 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import find_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = 'Line-Provider'
+    app_name: str = "Line-Provider"
     debug: bool
     line_provider_host: str
     line_provider_port: int
@@ -15,7 +15,9 @@ class Settings(BaseSettings):
     rabbitmq_password: str = "password"
     rabbitmq_queue: str = "event_updates"
 
-    model_config = SettingsConfigDict(env_file=find_dotenv(), case_sensitive=False, extra="allow")
+    model_config = SettingsConfigDict(
+        env_file=find_dotenv(), case_sensitive=False, extra="allow"
+    )
 
 
 settings = Settings()

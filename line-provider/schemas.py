@@ -4,7 +4,14 @@ from decimal import Decimal
 from itertools import count
 from typing import Optional
 
-from pydantic import BaseModel, Field, condecimal, field_serializer, ConfigDict, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    condecimal,
+    field_serializer,
+    field_validator,
+)
 
 
 class EventStatus(enum.Enum):
@@ -14,6 +21,7 @@ class EventStatus(enum.Enum):
 
 
 index_generator = count(start=1)
+
 
 def next_index() -> int:
     return next(index_generator)

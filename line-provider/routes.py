@@ -2,22 +2,21 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Path
 
-
-from schemas import GetEventSchema, CreateEventSchema, UpdateEventSchema
-from services.rabbit_service import send_event_update
 from database import events
+from schemas import CreateEventSchema, GetEventSchema, UpdateEventSchema
+from services.rabbit_service import send_event_update
 
-router = APIRouter(prefix='/events', tags=['Events'])
+router = APIRouter(prefix="/events", tags=["Events"])
 
 
-@router.post('/', status_code=201)
+@router.post("/", status_code=201)
 async def create_event(event: CreateEventSchema) -> GetEventSchema:
     new_event = GetEventSchema(**event.model_dump())
     events[new_event.event_id] = new_event
     return new_event
 
 
-@router.patch('/{event_id}/', status_code=200, response_model=GetEventSchema)
+@router.patch("/{event_id}/", status_code=200, response_model=GetEventSchema)
 async def update_event(event: UpdateEventSchema, event_id: int = Path(..., gt=0)):
     if event_id not in events:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -33,12 +32,16 @@ async def update_event(event: UpdateEventSchema, event_id: int = Path(..., gt=0)
     return existing_event
 
 
-@router.get('/', status_code=200)
+@router.get("/", status_code=200)
 async def get_events() -> list[GetEventSchema]:
-    return list(GetEventSchema.model_validate(e) for e in events.values() if datetime.now() < e.deadline)
+    return list(
+        GetEventSchema.model_validate(e)
+        for e in events.values()
+        if datetime.now() < e.deadline
+    )
 
 
-@router.get('/{event_id}/', status_code=200)
+@router.get("/{event_id}/", status_code=200)
 async def get_event(event_id: int = Path(..., gt=0)) -> GetEventSchema:
     if event_id not in events:
         raise HTTPException(status_code=404, detail="Event not found")
