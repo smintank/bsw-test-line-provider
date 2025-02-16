@@ -1,5 +1,6 @@
 EVENT_UNAVAILABLE = "Уже нельзя сделать ставку на это событие."
 EVENT_NOT_IN_API = "Событие %s не найдено в Line-provider"
+EVENT_NOT_EXISTS = "Такого события не существует"
 
 API_JSON_ERROR = "[%s] Ошибка декодирования JSON: %s"
 API_HTTP_ERROR = "[%s] Ошибка HTTP: %s"

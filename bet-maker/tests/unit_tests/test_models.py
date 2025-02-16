@@ -2,12 +2,10 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 import pytest
-import pytest_asyncio
 from sqlalchemy import select
 
 from models import Bet
 from models.events import Event, EventStatus
-from routes.events import get_available_events
 
 
 def test_bet_status_enum():
@@ -28,22 +26,12 @@ def valid_event_data():
 
 
 @pytest.fixture
-def invalid_event_data():
-    pass
-
-
-@pytest.fixture
 def valid_bet_data(add_event_to_db):
     return {
         "amount": Decimal("50.0"),
         "coefficient": Decimal("3.0"),
         "event": add_event_to_db,
     }
-
-
-@pytest.fixture
-def invalid_bet_data():
-    pass
 
 
 @pytest.mark.asyncio

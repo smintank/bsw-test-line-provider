@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from messages import EVENT_NOT_IN_API, EVENT_UNAVAILABLE
+from messages import EVENT_NOT_IN_API, EVENT_UNAVAILABLE, EVENT_NOT_EXISTS
 from models.events import Event
 from repositories.evants import EventRepository
 from schemas.event_schemas import EventSchema
@@ -39,6 +39,7 @@ class EventService:
             return await self.event_repo.create(db, event)
 
         logger.debug(EVENT_NOT_IN_API, event_id)
+        raise HTTPException(status_code=404, detail={"message": EVENT_NOT_EXISTS})
 
     async def get_all_events(self) -> list[EventSchema]:
         """Запрашивает данные по API и возвращает"""

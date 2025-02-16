@@ -65,7 +65,7 @@ async def test_create_bet_with_not_existed_event(
         await bet_service.create_new_bet(test_db, bet_data)
 
     assert exc_info.value.status_code == 404
-    assert exc_info.value.detail == {"message": messages.EVENT_UNAVAILABLE}
+    assert exc_info.value.detail == {"message": messages.EVENT_NOT_EXISTS}
 
 
 @pytest.mark.parametrize("event_id", ["test", -1, 0])
