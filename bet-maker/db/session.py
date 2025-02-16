@@ -18,10 +18,7 @@ DATABASE_URL = (
 )
 
 async_engine = create_async_engine(
-    DATABASE_URL,
-    echo=settings.debug,
-    pool_size=10,
-    max_overflow=20
+    DATABASE_URL, echo=settings.debug, pool_size=10, max_overflow=20
 )
 
 AsyncSessionLocal = async_sessionmaker(bind=async_engine, expire_on_commit=False)

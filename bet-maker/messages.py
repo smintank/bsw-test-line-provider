@@ -7,7 +7,9 @@ API_REQUEST_ERROR = "[%s] Ошибка запроса: %s"
 API_UNKNOWN_ERROR = "[%s] Непредвиденная ошибка: %s"
 
 RABBITMQ_EVENT_UPDATED = "Обновление ставки для события %s, новый статус: %s"
-RABBITMQ_EVENT_NOT_UPDATED = "У события %s не был обновлен статус на: %s, событие не найдено"
+RABBITMQ_EVENT_NOT_UPDATED = (
+    "У события %s не был обновлен статус на: %s, событие не найдено"
+)
 RABBITMQ_READY_FOR_MSGS = "[*] Ожидание сообщений. Для выхода нажмите CTRL+C"
 RABBITMQ_RUN_CONSUMER = "Starting rabbitmq consumer"
 

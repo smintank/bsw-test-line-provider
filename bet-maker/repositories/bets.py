@@ -1,24 +1,28 @@
-from collections.abc import Sequence
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from models.bets import Bet
+from repositories.base import ItemRepositoryAbstract
 
 
-class BetRepository:
+class BetRepository(ItemRepositoryAbstract[Bet]):
+    model = Bet
 
-    @staticmethod
-    async def create_bet(db: AsyncSession, bet: Bet) -> Bet:
-        """Создает ставку в базе данных."""
-        db.add(bet)
-        await db.commit()
-        await db.refresh(bet)
-        return bet
+    @classmethod
+    async def get_one(cls, db: AsyncSession, item_id: int) -> Bet | None:
+        """Дополнительно загружает связанные события"""
+        result = await db.execute(
+            select(cls.model)
+            .filter(Bet.id == item_id)
+            .options(joinedload(cls.model.event))
+        )
+        return result.scalars().first()
 
-    @staticmethod
-    async def get_all_bets(db: AsyncSession) -> Sequence[Bet]:
-        """Возвращает все ставки из базы данных"""
-        result = await db.execute(select(Bet).options(joinedload(Bet.event)))
+    @classmethod
+    async def get_all(cls, db: AsyncSession) -> list[Bet]:
+        """Дополнительно загружает связанные события"""
+        result = await db.execute(
+            select(cls.model).options(joinedload(cls.model.event))
+        )
         return list(result.scalars().all())

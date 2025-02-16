@@ -10,7 +10,4 @@ console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setLevel(LOG_LEVEL)
 console_handler.setFormatter(logging.Formatter(LOG_FORMAT))
 
-logging.basicConfig(
-    level=LOG_LEVEL,
-    handlers=[console_handler]
-)
+logging.basicConfig(level=LOG_LEVEL, handlers=[console_handler])

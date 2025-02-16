@@ -30,9 +30,7 @@ class Settings(BaseSettings):
     rabbitmq_queue: str = "event_updates"
 
     model_config = SettingsConfigDict(
-        env_file=find_dotenv(),
-        case_sensitive=False,
-        extra="allow"
+        env_file=find_dotenv(), case_sensitive=False, extra="allow"
     )
 
     @property
