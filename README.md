@@ -8,7 +8,7 @@
 - Получать информацию о текущих событиях
 - Обновлять статус событий в режиме реального времени через интеграцию с `RabbitMQ`
 
-Проект использует **FastAPI, PostgreSQL, RabbitMQ и Docker Compose**.
+Проект использует **FastAPI, PostgreSQL, RabbitMQ, Docker Compose, Nginx и Pytest**.
 
 ---
 
@@ -33,17 +33,17 @@ LINE_PROVIDER_PORT=8080
 NGINX_HOST_PORT=8000
 
 # PostgreSQL
-POSTGRES_USER=<your_postgres_user>
+POSTGRES_USER=bet_user
 POSTGRES_PASSWORD=<your_postgres_password>
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
-POSTGRES_DB=<your_postgres_db>
+POSTGRES_DB=bet_db
 
 # RabbitMQ
 RABBITMQ_HOST=rabbitmq
 RABBITMQ_PORT=5672
 RABBITMQ_USER=user
-RABBITMQ_PASSWORD=password
+RABBITMQ_PASSWORD=<your_rabbit_password>
 RABBITMQ_QUEUE=event_updates
 ```
 
@@ -84,10 +84,13 @@ python services/rabbitmq_consumer.py
 ## **API эндпоинты**
 
 ### **1. Ставки**
-- `POST /bet/` — создание ставки
 - `GET /bets/` — получение истории ставок
+- `POST /bet/` — создание ставки
+- `GET /events/` - получение событий доступных для ставок
 
 ### **2. События**
+- `GET /events/` - получение всех актуальных событий
 - `GET /events/{event_id}/` — получение информации о событии
+- `POST /events/` - создание события
 - `PATCH /events/{event_id}/` — обновление статуса события
 
